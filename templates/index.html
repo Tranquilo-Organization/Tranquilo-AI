@@ -1,55 +1,97 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-
-      <head>
-        <meta charset="utf-8">
-        <title>Anxiey classification Model</title>
-        <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-		
-		<style>
-			.content {
-			  max-width: 500px;
-			  margin: auto;
-			}
-			
-			
-			.bg-img{
-		width: 100%;
-		height: 100vh;
-		background-size: cover;
-		background-position: center;
-			}
-			</style>
-    </head>
-	
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anxiety Level classification </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
 <body>
-<div class="bg-img">
-<div class="content">
-    <body>
-  
-        <h1>Anxiey Level classification</h1>
-        <form action="{{url_for('predict')}}" method="post">
-            <input type="text" name="age" placeholder="Age" required="required">
-            <input type="text" name="gender" placeholder="Gender" required="required">
-            <input type="text" name="bmi" placeholder="body mass index" required="required">
-            <input type="text" name="who_bmi" placeholder="bmi category" required="required">
-            <input type="text" name="phq_score" placeholder="Measure the severity of symptoms related to depression, anxiety" required="required">
-            <input type="text" name="depression_severity" placeholder="Depression level" required="required">
-            <input type="text" name="depressiveness" placeholder="Are you suffering from depression" required="required">
-            <input type="text" name="depression_diagnosis" placeholder="Do you diagnose yourself as being destined" required="required">
-            <input type="text" name="anxiousness" placeholder="Do you feel anxious" required="required">
-            <input type="text" name="anxiety_diagnosis" placeholder="Do you diagnose yourself as anxious?" required="required">
-            <input type="text" name="anxiety_treatment" placeholder="Have you ever taken any medication for anxiety" required="required">
-            <input type="text" name="sleepiness" placeholder="Do you have problems sleeping" required="required">
-            <button type="submit" class="btn btn-primary btn-block btn-large">Classify</button>
+    <div class="container">
+        <h2 class="mt-5">Anxiety Level classification</h2>
+        <form method="POST" action="/predict" class="mt-4">
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" class="form-control" id="age" name="age" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select class="form-control" id="gender" name="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="bmi">Body Mass Index (BMI) You can calculate it by this way--->weight in kilograms/square height in meters :</label>
+                <input type="number" step="0.1" class="form-control" id="bmi" name="bmi" required>
+            </div>
+            <div class="form-group">
+                <label for="who_bmi">WHO BMI Category:</label>
+        <select name="who_bmi" required>
+            <option value="Normal">Normal if bmi 18.5-25</option>
+            <option value="Overweight">Overweight if bmi 25-30</option>
+            <option value="Underweight">Underweight if bmi < 18.5 </option>
+            <option value="Class I Obesity">Class I Obesity if bmi 30-35</option>
+            <option value="Class II Obesity">Class II Obesity if bmi 35-40</option>
+            <option value="Class III Obesity">Class III Obesity if bmi >40</option>
+        </select>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Do you experience depressiveness?</label>
+                <select class="form-control" name="depressiveness" required>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Have you been diagnosed with depression?</label>
+                <select class="form-control" name="depression_diagnosis" required>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Are you receiving treatment for depression?</label>
+                <select class="form-control" name="depression_treatment" required>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Do you feel anxious?</label>
+                <select class="form-control" name="anxiousness" required>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Have you been diagnosed with anxiety?</label>
+                <select class="form-control" name="anxiety_diagnosis" required>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Are you receiving treatment for anxiety?</label>
+                <select class="form-control" name="anxiety_treatment" required>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Do you feel sleep disturbances?</label>
+                <select class="form-control" name="sleepiness" required>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Classify Anxiety Level</button>
         </form>
-        <br>
-        <br>
-        {{ classification_text }}   		
-</div>
-</div>
+
+        {% if classification_text %}
+        <h3 class="mt-4">{{ classification_text }}</h3>
+        {% endif %}
+    </div>
+</body>
 </html>
