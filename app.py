@@ -49,14 +49,30 @@ def predict():
         # Make prediction using the loaded model
         prediction = model.predict(final_features)
 
-        # Map prediction output to anxiety level
-        anxiety_levels = ["Mild", "Moderate", "None-minimal", "Severe"]
-        anxiety_level = anxiety_levels[prediction[0]] if prediction[0] < len(anxiety_levels) else "Unknown"
+        # Map prediction output to anxiety level and ID
+        anxiety_levels = [
+            {"level": "None-minimal", "id": 4},
+            {"level": "Mild", "id": 1},
+            {"level": "Moderate", "id": 2},
+            {"level": "Severe", "id": 3}
+        ]
+        
+        # Get the predicted anxiety level and ID
+        predicted_anxiety = anxiety_levels[prediction[0]] if prediction[0] < len(anxiety_levels) else {"level": "Unknown", "id": -1}
 
         # Return the prediction as a JSON response with a status code
-        return jsonify({"anxiety_level": anxiety_level, "statusCode": 200}), 200
+        return jsonify({
+            "anxiety_level": predicted_anxiety['level'],
+            "anxiety_level_id": predicted_anxiety['id'],
+            "statusCode": 200
+        }), 200
+
+    except KeyError as e:
+        # Handle missing or invalid input data (400 - Bad Request)
+        return jsonify({"message": f"Missing or invalid data: {str(e)}", "statusCode": 400}), 400
 
     except Exception as e:
+        # Handle internal errors (500 - Internal Server Error)
         return jsonify({"message": str(e), "statusCode": 500}), 500
 
 if __name__ == '__main__':
